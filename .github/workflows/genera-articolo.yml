@@ -1,0 +1,30 @@
+name: Genera Articolo Settimanale
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # ogni lunedì alle 9:00 UTC
+  workflow_dispatch:     # esegui anche manualmente se vuoi
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Esegui script Generazione.js
+        run: node Generazione.js
+
+      - name: Commit e push degli articoli generati
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "📝 Articolo automatico settimanale" || echo "Nessuna modifica"
+          git push
