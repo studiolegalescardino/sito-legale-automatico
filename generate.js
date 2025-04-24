@@ -1,85 +1,62 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const TEMI = [
-  "Separazione consensuale: procedura e vantaggi",
-  "Divorzio con figli minori: responsabilità e tutele",
-  "Sinistro mortale: responsabilità e risarcimento",
-  "Successione legittima: guida completa",
-  "Locazioni: obblighi del locatore e dell’inquilino",
-  "Licenziamento illegittimo: come difendersi",
-  "Spese straordinarie per i figli",
-  "Danni da incidente: come ottenere il risarcimento",
-  "Responsabilità medica e danni alla persona",
-  "Condominio: diritti e doveri dei proprietari"
-];
-
-function scegliTemi(n) {
-  const shuffle = [...TEMI].sort(() => 0.5 - Math.random());
-  return shuffle.slice(0, n);
+// Funzione per generare un articolo
+function generateArticle() {
+  const today = new Date();
+  const articleDate = today.toISOString().split('T')[0];  // Formato data "YYYY-MM-DD"
+  
+  // Creazione del titolo
+  const articleTitle = `Guida Legale: Nuove normative e diritti in evoluzione - ${articleDate}`;
+  
+  // Creazione della meta description per SEO
+  const metaDescription = `Scopri le ultime novità legali, le normative aggiornate e i tuoi diritti in evoluzione. Un articolo settimanale dedicato a temi legali importanti.`;
+  
+  // Contenuto dell'articolo: lunga, informativa e SEO-friendly
+  const articleContent = `
+    <html lang="it">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="description" content="${metaDescription}" />
+      <title>${articleTitle}</title>
+      <meta name="keywords" content="legge, diritti, normativa, contratto, diritto civile, consumatore, giustizia">
+    </head>
+    <body>
+      <h1>${articleTitle}</h1>
+      <p>Benvenuti nel nostro articolo settimanale che esplora temi legali cruciali per la nostra società. Oggi parleremo delle nuove normative legali che influenzano i consumatori e i cittadini.</p>
+      
+      <h2>Introduzione alla normativa recente</h2>
+      <p>Nel corso degli ultimi mesi, diverse leggi e normative sono state introdotte per migliorare la protezione dei consumatori e semplificare la giustizia civile. Questi cambiamenti sono vitali per garantire che i diritti di ogni cittadino siano tutelati in modo equo e giusto.</p>
+      
+      <h3>1. Cambiamenti nel diritto civile</h3>
+      <p>Una delle aree più rilevanti per i cittadini riguarda le modifiche al diritto civile, con l'introduzione di nuove misure per la risoluzione delle controversie e l'accelerazione dei procedimenti legali...</p>
+      
+      <h3>2. Il contratto di consumo e le nuove regole</h3>
+      <p>I contratti di consumo hanno subito delle modifiche che riguardano principalmente la trasparenza, la possibilità di recesso e le nuove tutele per gli utenti, con l'intento di rendere i processi più chiari e sicuri...</p>
+      
+      <h3>3. Le leggi per la tutela del consumatore</h3>
+      <p>Le leggi incentrate sulla protezione dei consumatori hanno portato a numerosi aggiornamenti che riguardano le vendite a distanza, il commercio elettronico e la risoluzione dei conflitti senza il bisogno di andare in tribunale...</p>
+      
+      <h2>Conclusioni</h2>
+      <p>Il panorama legale sta cambiando rapidamente, e come cittadini è fondamentale rimanere informati. Questo articolo ha trattato alcune delle principali novità che riguardano la vita quotidiana e il diritto di ciascuno di noi...</p>
+      
+      <p>Per maggiori aggiornamenti e articoli settimanali, continuate a seguirci. Se avete domande o dubbi riguardanti la legislazione, non esitate a contattarci.</p>
+    </body>
+    </html>
+  `;
+  
+  // Percorso in cui salvare l'articolo
+  const articlePath = path.join(__dirname, 'articles', `articolo-${articleDate}.html`);
+  
+  // Creazione della cartella se non esiste
+  fs.mkdirSync(path.join(__dirname, 'articles'), { recursive: true });
+  
+  // Scrive il contenuto dell'articolo nel file HTML
+  fs.writeFileSync(articlePath, articleContent);
+  
+  console.log(`Articolo generato per la data ${articleDate}`);
 }
 
-function creaArticolo(titolo, data) {
-  const slug = titolo.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  const fileName = `articoli/${slug}-${data}.html`;
-
-  const contenuto = `
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <title>${titolo}</title>
-  <meta name="description" content="${titolo} - Approfondimento legale a cura dello Studio Scardino.">
-</head>
-<body>
-  <h1>${titolo}</h1>
-
-  <h2>Introduzione</h2>
-  <p>${titolo}. In questo articolo esamineremo gli aspetti principali legati a questa tematica, analizzando implicazioni pratiche e legali.</p>
-
-  <h2>Contesto normativo</h2>
-  <p>La normativa italiana regola questa materia attraverso articoli precisi del codice civile, del codice penale e delle leggi speciali. È importante conoscere i riferimenti per tutelare i propri diritti.</p>
-
-  <h2>Applicazioni pratiche</h2>
-  <p>Nel contesto quotidiano, il tema di "${titolo}" si presenta in varie situazioni. Ad esempio, durante controversie familiari, incidenti stradali o contenziosi condominiali.</p>
-
-  <h2>Casi frequenti</h2>
-  <p>L’esperienza dello Studio Legale Scardino ci ha mostrato che i casi più frequenti includono errori comuni di gestione, mancanza di documentazione o sottovalutazione dei termini procedurali.</p>
-
-  <h2>Conclusioni</h2>
-  <p>Il consiglio è sempre quello di affidarsi a un professionista per una consulenza dettagliata e tempestiva.</p>
-
-  <p>Per assistenza legale su questo argomento, visita il sito ufficiale 👉 <a href="https://www.studiolegalescardino.com" target="_blank">studiolegalescardino.com</a></p>
-
-  <p><a href="/">← Torna alla homepage</a></p>
-</body>
-</html>
-`;
-
-  fs.mkdirSync("articoli", { recursive: true });
-  fs.writeFileSync(fileName, contenuto.trim());
-
-  return `<li><a href="${fileName}">${titolo}</a></li>\n`;
-}
-
-// Calcolo settimane trascorse dal giorno zero (puoi cambiarlo)
-const dataInizio = new Date("2025-04-24"); // oggi
-const oggi = new Date();
-const diffSettimane = Math.floor((oggi - dataInizio) / (1000 * 60 * 60 * 24 * 7));
-const quantiArticoli = diffSettimane < 6 ? 1 : 2;
-
-const oggiStr = oggi.toISOString().slice(0, 10);
-const temiSelezionati = scegliTemi(quantiArticoli);
-
-let index = fs.readFileSync("index.html", "utf-8");
-const marker = "<!-- ARTICOLI -->";
-
-temiSelezionati.forEach(titolo => {
-  const riga = creaArticolo(titolo, oggiStr);
-  if (index.includes(marker)) {
-    index = index.replace(marker, riga + marker);
-  }
-});
-
-fs.writeFileSync("index.html", index);
-console.log(`✅ Generati ${quantiArticoli} articolo/i per la data ${oggiStr}`);
+// Esegui la generazione dell'articolo
+generateArticle();
